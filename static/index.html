@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VaaniTTS — Hindi & English Text to Speech</title>
+<meta name="description" content="Paste up to 50,000 characters of Hindi, English or Hinglish text and turn it into natural speech." />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 10v4M8 6v12M12 3v18M16 7v10M20 10v4"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Vaani<span>TTS</span></h1>
+      <p class="tagline">Hindi · English · Hinglish — up to 50,000 characters at a time</p>
+    </div>
+  </div>
+  <div class="engine" id="engineBadge" title="Active speech engine">
+    <span class="dot"></span><span id="engineName">Checking engine…</span>
+  </div>
+</header>
+
+<div class="banner" id="setupBanner" hidden>
+  <strong>No speech engine configured.</strong>
+  <span id="setupText"></span>
+  <button class="banner-close" id="dismissBanner" aria-label="Dismiss">✕</button>
+</div>
+
+<main class="layout">
+
+  <!-- ── Editor ─────────────────────────────────────────────── -->
+  <section class="card editor-card">
+    <div class="card-head">
+      <h2>Your text</h2>
+      <div class="head-actions">
+        <button class="ghost sm" id="sampleBtn" type="button">Load sample</button>
+        <button class="ghost sm" id="clearBtn" type="button">Clear</button>
+      </div>
+    </div>
+
+    <label class="drop-zone" id="dropZone" for="fileInput">
+      <textarea id="text" maxlength="50000" spellcheck="false"
+        placeholder="यहाँ अपना टेक्स्ट पेस्ट करें… paste your Hindi, English or Hinglish script here.
+
+Tip: drag & drop a .txt file anywhere on this box, or press ⌘/Ctrl + Enter to convert."></textarea>
+      <span class="drop-hint">Drop a .txt / .md file to load it</span>
+    </label>
+    <input type="file" id="fileInput" accept=".txt,.md,text/plain" hidden />
+
+    <div class="editor-foot">
+      <div class="stats">
+        <span><b id="charCount">0</b> / 50,000 characters</span>
+        <span><b id="wordCount">0</b> words</span>
+        <span>≈ <b id="estTime">0:00</b> audio</span>
+      </div>
+      <div class="meter"><i id="charMeter"></i></div>
+    </div>
+  </section>
+
+  <!-- ── Controls / result ──────────────────────────────────── -->
+  <aside class="side">
+    <section class="card">
+      <div class="card-head"><h2>Voice</h2></div>
+
+      <label class="field">
+        <span>Voice</span>
+        <select id="voiceSelect"></select>
+      </label>
+
+      <label class="field">
+        <span>Speed <em id="rateLabel">1.0×</em></span>
+        <input type="range" id="rate" min="0.6" max="1.6" step="0.05" value="1" />
+        <div class="range-scale"><span>Slower</span><span>Natural</span><span>Faster</span></div>
+      </label>
+
+      <button class="primary" id="convertBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/>
+        </svg>
+        <span id="convertLabel">Convert to speech</span>
+      </button>
+
+      <div class="progress-wrap" id="progressWrap" hidden>
+        <div class="progress"><i id="progressBar"></i></div>
+        <div class="progress-row">
+          <span id="progressText">Starting…</span>
+          <button class="link" id="cancelBtn" type="button">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card result" id="resultCard" hidden>
+      <div class="card-head">
+        <h2>Your audio</h2>
+        <span class="pill" id="resultMeta"></span>
+      </div>
+      <audio id="player" controls preload="metadata"></audio>
+      <div class="result-actions">
+        <a class="primary sm" id="downloadBtn" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/>
+          </svg>
+          Download MP3
+        </a>
+        <button class="ghost sm" id="againBtn" type="button">New conversion</button>
+      </div>
+    </section>
+  </aside>
+</main>
+
+<!-- ── History ──────────────────────────────────────────────── -->
+<section class="card history" id="historyCard" hidden>
+  <div class="card-head">
+    <h2>Recent conversions</h2>
+    <button class="ghost sm" id="refreshHistory" type="button">Refresh</button>
+  </div>
+  <ul class="history-list" id="historyList"></ul>
+</section>
+
+<footer class="foot">
+  <span>VaaniTTS · runs locally on your machine · API keys stay in <code>.env</code></span>
+</footer>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
